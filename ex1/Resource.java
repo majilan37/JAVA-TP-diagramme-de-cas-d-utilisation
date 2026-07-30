@@ -4,33 +4,29 @@ import java.time.LocalDate;
 
 public abstract class Resource {
     protected final int id;
-    protected String nom;
-    protected boolean disponible;
+    protected final String nom;
 
-    public Resource(int id, String nom) {
+    protected Resource(int id, String nom) {
         this.id = id;
         this.nom = nom;
-        this.disponible = true;
     }
 
     public int getId() {
         return id;
     }
 
-    public String getName() {
+    public String getNom() {
         return nom;
     }
 
-    public boolean getDisponible() {
-        return disponible;
+    public boolean estDisponible(LocalDate date, int heureDebut, int heureFin) {
+        return !Reservation.aConflit(this, date, heureDebut, heureFin);
     }
 
-    public void setDisponible(boolean disponible) {
-        this.disponible = disponible;
+    public abstract Reservation reserver(Enseignant enseignant, LocalDate date, int heureDebut, int heureFin);
+
+    @Override
+    public String toString() {
+        return "%s{id=%d, nom='%s'}".formatted(getClass().getSimpleName(), id, nom);
     }
-
-    public abstract void reserver(Enseignant enseignant, LocalDate date, int heureDebut, int heureFin);
-
-    public abstract void liberer();
-
 }

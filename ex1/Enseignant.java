@@ -1,25 +1,23 @@
 package TP5.ex1;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Random;
-import java.util.stream.Stream;
 
 public class Enseignant extends Utilisateur {
     private static int count;
-    private String grade;
-
     private static final Random random = new Random();
     private static final String[] prenoms = {
             "Mohamed", "Ahmed", "Youssef", "Omar",
             "Amine", "Salma", "Sara", "Lina"
     };
-
     private static final String[] noms = {
             "Alami", "Bennani", "Alaoui", "Tazi",
             "Amrani", "El Idrissi", "Chraibi", "Fassi"
     };
+    private static final String[] grades = { "Professeur", "Maitre de conference", "Charge de cours", "Vacataire" };
 
-    private static final String[] grades = { "Professeur", "Maitre de conferance", "Charge de cours", "Vacataire" };
+    private final String grade;
 
     public Enseignant(String nom, String prenom, String email, String grade) {
         count++;
@@ -34,20 +32,38 @@ public class Enseignant extends Utilisateur {
         return grade;
     }
 
-    public void reserveResource(Resource resource, LocalDate date, int heureDebut, int heureFin) {
-        Reservation.cree(this, resource, date, heureDebut, heureFin);
+    public Reservation reserveResource(Resource resource, LocalDate date, int heureDebut, int heureFin) {
+        return resource.reserver(this, date, heureDebut, heureFin);
     }
 
     public void consulterRecapitulatifHoraire() {
+        List<Reservation> reservations = Reservation.getReservationsPourEnseignant(this);
+        int totalHeures = reservations.stream()
+                .mapToInt(Reservation::getDuree)
+                .sum();
 
-        Stream<Reservation> reservations = Reservation.database.stream();
-        reservations.filter((reservation) -> reservation.getEnseignant().getId() == reservation.getId())
-                .forEach(System.out::println);
+        System.out.println("Recapitulatif horaire de " + getNomComplet());
+        System.out.println("----------------------------------------");
+
+        if (reservations.isEmpty()) {
+            System.out.println("Aucune reservation.");
+            return;
+        }
+
+        for (Reservation reservation : reservations) {
+            System.out.println(reservation);
+        }
+
+        System.out.println("Total heures reservees: " + totalHeures + "h");
+    }
+
+    public void editerRecapitulatifFormation(Formation formation) {
+        System.out.println(formation.editerRecapitulatifHoraire(this));
     }
 
     @Override
     public String toString() {
-        return String.format("Enseingnant ID: %d | Nom: %s | Prénom: %s", id, nom, prenom);
+        return "Enseignant ID: %d | Nom: %s | Prenom: %s | Grade: %s".formatted(id, nom, prenom, grade);
     }
 
     public static Enseignant genererEnseignantAleratoire() {
@@ -56,6 +72,6 @@ public class Enseignant extends Utilisateur {
         String email = String.format("%s.%s@gmail.com", nom.toLowerCase(), prenom.toLowerCase());
         String grade = grades[random.nextInt(grades.length)];
 
-        return new Enseignant(prenom, prenom, email, grade);
+        return new Enseignant(nom, prenom, email, grade);
     }
 }

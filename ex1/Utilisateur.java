@@ -1,6 +1,6 @@
 package TP5.ex1;
 
-import java.util.stream.Stream;
+import java.util.List;
 
 public abstract class Utilisateur {
     protected int id;
@@ -24,20 +24,23 @@ public abstract class Utilisateur {
         return email;
     }
 
-    public void consulterPlanning() {
-        Stream<Reservation> reservations = Reservation.database.stream()
-                .filter((reservation) -> reservation.getResource() instanceof Salle);
-
-        long totalSalleReservee = reservations
-                .count();
-
-        System.out.println("Total des salle reservée: " + totalSalleReservee);
-        System.out.println("--------------");
-        System.out.println("Salle réservée: ");
-
-        reservations.forEach((reservation) -> {
-            System.out.println(reservation.getResource());
-        });
+    public String getNomComplet() {
+        return prenom + " " + nom;
     }
 
+    public void consulterPlanning() {
+        List<Reservation> reservations = Reservation.getReservationsDesSalles();
+
+        System.out.println("Planning des salles");
+        System.out.println("-------------------");
+
+        if (reservations.isEmpty()) {
+            System.out.println("Aucune salle reservee.");
+            return;
+        }
+
+        for (Reservation reservation : reservations) {
+            System.out.println(reservation);
+        }
+    }
 }

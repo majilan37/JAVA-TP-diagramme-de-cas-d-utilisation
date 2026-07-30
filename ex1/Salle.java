@@ -1,10 +1,11 @@
 package TP5.ex1;
 
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Random;
 
 class Salle extends Resource {
-    private int capacite;
+    private final int capacite;
     private static final Random random = new Random();
 
     public Salle(int id, String nom, int capacite) {
@@ -17,34 +18,36 @@ class Salle extends Resource {
     }
 
     @Override
-    public void reserver(Enseignant enseignant, LocalDate date, int heureDebut, int heureFin) {
-        if (this.disponible == false) {
-            System.out.println("Resource n'est pas disponible");
-        } else {
-            Reservation.cree(enseignant, this, date, heureDebut, heureFin);
-        }
-    }
-
-    @Override
-    public void liberer() {
-        Reservation reservation = Reservation.cherche(id);
-        if (reservation == null) {
-            throw new RuntimeException("Resevation introuvable");
-        }
-
-        Reservation.remove(reservation);
+    public Reservation reserver(Enseignant enseignant, LocalDate date, int heureDebut, int heureFin) {
+        return Reservation.creer(enseignant, this, date, heureDebut, heureFin);
     }
 
     @Override
     public String toString() {
-        return "Salle ID: %d | Nom: %s | Disponible: %b".formatted(id, nom, disponible);
+        return "Salle ID: %d | Nom: %s | Capacite: %d".formatted(id, nom, capacite);
     }
 
     public static Salle genererSalleAleratoire() {
-        int id = random.nextInt(65, 90);
-        String nom = "Salle " + (char) id;
-        int capacite = random.nextInt(30, 40);
+        int id = random.nextInt(100, 999);
+        String nom = "Salle " + (char) random.nextInt(65, 91);
+        int capacite = random.nextInt(30, 41);
 
         return new Salle(id, nom, capacite);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof Salle other)) {
+            return false;
+        }
+        return id == other.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
