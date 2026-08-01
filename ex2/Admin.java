@@ -5,4 +5,5 @@ public class Admin extends User {
         super(fistName, lastName, Role.ADMIN);
         this.email = email;
     }
+
 }

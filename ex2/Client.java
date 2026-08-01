@@ -21,7 +21,8 @@ public class Client extends User {
         this.address = address;
     }
 
-    public void getOffers() {
+    public List<Offer> getOffers() {
+        return Offer.getAll();
     }
 
     public void addReservation(Offer offer, LocalDateTime startDate, int participants) {
@@ -43,7 +44,7 @@ public class Client extends User {
 
             if (!reservation.getClient().equals(this)) {
                 System.out.println("You cannot view this reservation, it doesn't belong to you");
-                return null;
+                return Optional.empty();
             }
 
         }

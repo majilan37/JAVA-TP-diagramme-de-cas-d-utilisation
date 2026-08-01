@@ -28,6 +28,7 @@ public class Offer {
         this.duration = duration;
         this.startDate = startDate;
         this.price = price;
+        this.agent = agent;
     }
 
     public int getId() {

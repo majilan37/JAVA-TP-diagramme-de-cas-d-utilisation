@@ -12,7 +12,7 @@ public class Agent extends User {
     }
 
     public void createOffer(String name, String duration, LocalDateTime startDate, double price) {
-        Offer.create(this, lastName, firstName, startDate, price);
+        Offer.create(this, name, duration, startDate, price);
     }
 
     public void updateOffer(int id, String name, String duration, LocalDateTime startDate, double price) {
@@ -39,7 +39,7 @@ public class Agent extends User {
 
             if (!offer.getAgent().equals(this)) {
                 System.out.println("You cannot view this offer, it doesn't belong to you");
-                return null;
+                return Optional.empty();
             }
 
         }
